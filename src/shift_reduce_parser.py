@@ -4,9 +4,12 @@ import json
 
 class arcEager(object):
 	
-	def __init__(self, grammar):
+	#with open("grammar-urdu.json") as jfp: #NOTE necessary grammar to parse the sequence.
+	with open("grammar-hindi.json") as jfp: #NOTE necessary grammar to parse the sequence.
+		template = json.load(jfp)
+
+	def __init__(self, sequence):
 		self.stack = list()
-		self.template = grammar
 		self.sequence = sequence
 		self.labeledEdges = list()
 		self.queue = range(len(sequence))# + [len(sequence)] #NOTE with dummy ROOT
@@ -17,7 +20,7 @@ class arcEager(object):
 		"""
 		return (len(self.stack) == 1 and len(self.queue) == 0)
 
-	def parse(self, sequence):
+	def parse(self):
 		"""
 		Parses the sequence incrementaly till all the input is consumed and only root node is left.
 		"""
