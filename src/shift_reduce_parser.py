@@ -1,15 +1,10 @@
 #!/usr/env python
 
-import json
-
 class arcEager(object):
 	
-	#with open("grammar-urdu.json") as jfp: #NOTE necessary grammar to parse the sequence.
-	with open("grammar-hindi.json") as jfp: #NOTE necessary grammar to parse the sequence.
-		template = json.load(jfp)
-
-	def __init__(self, sequence):
+	def __init__(self, grammar, sequence):
 		self.stack = list()
+		self.template = grammar
 		self.sequence = sequence
 		self.labeledEdges = list()
 		self.queue = range(len(sequence))# + [len(sequence)] #NOTE with dummy ROOT

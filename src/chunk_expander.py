@@ -4,6 +4,7 @@ import os
 import re
 import sys
 
+import json
 import logging
 import argparse
 
@@ -58,7 +59,7 @@ def expander(sentences):
 						for child in node.children:
 							tree_.append(getAttributeValuePairs(child,chunkToWordMapping,(node.name, 'mod')))
 						continue
-					sr_parser = arcEager(sorted([node]+node.children, key=lambda node_: int(node_.id)))
+					sr_parser = arcEager(grammar, sorted([node]+node.children, key=lambda node_: int(node_.id)))
 					try:
 						sr_parser.parse()
 					except:
@@ -98,6 +99,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="Chunk Expander !!")
 	parser.add_argument('--input-file'     , dest='input'     , required=True, help='Input file in ssf format')
 	parser.add_argument('--output-file'    , dest='output'    , required=True, help='Output file')
+	parser.add_argument('--grammar-file'   , dest='grammar'  , required=True, help='Grammar file')
 	parser.add_argument('--log-file'       , dest='log'       , required=True, help='will contain expansion details')
 
 	args = parser.parse_args()
@@ -109,6 +111,7 @@ if __name__ == "__main__":
 	else: logFile = open(args.log,'w')
 	
 	inputFile = open(args.input).read()
+	with open(args.grammar) as jfp: grammar = json.load(jfp)
 	
 	sentence_ids = re.findall('<Sentence id=(.*?)>', inputFile)
 	sentences = re.findall("<Sentence id=.*?>(.*?)</Sentence>",inputFile, re.S)

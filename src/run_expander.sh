@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $# -ne 2 ]]
+if [[ $# -ne 3 ]]
 then
 	echo "Required arguments not provided! Exiting now .. .. .."
 	exit
@@ -13,17 +13,18 @@ fi
 
 input=$1
 output=$2
+grammar=$3
 
 if [[ -f $input ]]
 then
-	python chunk_expander.py --input $1 --output $output --log log
+	python chunk_expander.py --input $1 --output $output --log log --grammar $grammar
 elif [[ -d $input ]]
 then
 	for file in $(find $input -name '*' );
 	do
 		if [[ -f $file ]]
 		then
-			python chunk_expander.py --input $file --output $output --log log
+			python chunk_expander.py --input $file --output $output --log log --grammar $grammar
 		fi
 	done
 else
