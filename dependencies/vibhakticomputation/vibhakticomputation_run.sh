@@ -1,2 +1,1 @@
-#perl $setu/bin/sl/vibhakticomputation/vibhakticomputation.pl --path=$setu/bin/sl/vibhakticomputation -i $1
-perl $ssf2conll/dependencies/vibhakticomputation/vibhakticomputation.pl --path=$ssf2conll/dependencies/vibhakticomputation/ -i $1
+perl $expander/dependencies/vibhakticomputation/vibhakticomputation.pl --path=$expander/dependencies/vibhakticomputation/ -i $1
