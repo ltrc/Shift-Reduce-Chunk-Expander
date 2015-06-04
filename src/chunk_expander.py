@@ -99,7 +99,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="Chunk Expander !!")
 	parser.add_argument('--input-file'     , dest='input'     , required=True, help='Input file in ssf format')
 	parser.add_argument('--output-file'    , dest='output'    , required=True, help='Output file')
-	parser.add_argument('--grammar-file'   , dest='grammar'  , required=True, help='Grammar file')
+	parser.add_argument('--grammar-file'   , dest='grammar'   , required=True, help='Grammar file')
 	parser.add_argument('--log-file'       , dest='log'       , required=True, help='will contain expansion details')
 
 	args = parser.parse_args()
@@ -117,6 +117,7 @@ if __name__ == "__main__":
 	sentences = re.findall("<Sentence id=.*?>(.*?)</Sentence>",inputFile, re.S)
 	
 	filePath = os.path.abspath(args.input)
+	logFile.write(filePath+"\n")
 	head_vib_computed_sentences = RD(sentences, sentence_ids)
 
 	expander(head_vib_computed_sentences)

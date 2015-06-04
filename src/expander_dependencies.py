@@ -1,4 +1,5 @@
 #!/usr/bin/env python -*- coding:utf-8 -*-
+
 import re
 import sys
 import tempfile
@@ -11,7 +12,7 @@ def run_dependencies(ssfSentences, sentencIds):
 	
 	for idx, sentence in enumerate(ssfSentences):
 		sentence = re.sub(r"<fs name='NULL(.*?)'>",r"<fs af='null,unk,,,,,,' name='NULL\1'>",\
-			   '<Sentence id="'+str(sentencIds[idx])[1:-1]+'">\n'+sentence.strip()+"\n</Sentence>\n") 
+			   '<Sentence id="'+str(sentencIds[idx])[1:-1]+'">\n'+sentence.strip()+"\n</Sentence>\n")
 			   # add af='' to null nodes.
 		tempInput = tempfile.NamedTemporaryFile()
 		tempOutput = tempfile.NamedTemporaryFile()
