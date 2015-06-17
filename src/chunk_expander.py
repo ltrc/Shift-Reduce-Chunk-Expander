@@ -8,8 +8,9 @@ import json
 import logging
 import argparse
 
+from arc_eager import arcEager
 from ssf_reader import SSFReader
-from shift_reduce_parser import arcEager
+from arc_standard import arcStandard
 from expander_dependencies import run_dependencies as RD
 	
 logging.basicConfig(level=logging.INFO)
@@ -59,7 +60,8 @@ def expander(sentences):
 						for child in node.children:
 							tree_.append(getAttributeValuePairs(child,chunkToWordMapping,(node.name, 'mod')))
 						continue
-					sr_parser = arcEager(grammar, sorted([node]+node.children, key=lambda node_: int(node_.id)))
+					#sr_parser = arcEager(grammar, sorted([node]+node.children, key=lambda node_: int(node_.id)))
+					sr_parser = arcStandard(grammar, sorted([node]+node.children, key=lambda node_: int(node_.id)))
 					try:
 						sr_parser.parse()
 					except:
