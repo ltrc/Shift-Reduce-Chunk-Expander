@@ -62,6 +62,7 @@ def expander(sentences):
 						continue
 					#sr_parser = arcEager(grammar, sorted([node]+node.children, key=lambda node_: int(node_.id)))
 					sr_parser = arcStandard(grammar, sorted([node]+node.children, key=lambda node_: int(node_.id)))
+					#sr_parser.parse()
 					try:
 						sr_parser.parse()
 					except:
@@ -113,7 +114,7 @@ if __name__ == "__main__":
 	else: logFile = open(args.log,'w')
 	
 	inputFile = open(args.input).read()
-	with open(args.grammar) as jfp: grammar = json.load(jfp)
+	with open(args.grammar) as jfp: grammar = eval(jfp.read())#json.load(jfp)
 	
 	sentence_ids = re.findall('<Sentence id=(.*?)>', inputFile)
 	sentences = re.findall("<Sentence id=.*?>(.*?)</Sentence>",inputFile, re.S)
