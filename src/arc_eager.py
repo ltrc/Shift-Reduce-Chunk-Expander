@@ -73,7 +73,7 @@ class arcEager(object):
 
 	def REDUCE(self):
 		"""
-		This thing is never called!
+		Pops the top of the stack, if it has been attached to a word.
 		"""
 		self.stack.pop()
 		return self
