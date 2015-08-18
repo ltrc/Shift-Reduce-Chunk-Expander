@@ -44,13 +44,13 @@ class SSFReader (SanityChecker):
 			nodeInfo = line.decode("utf-8").split("\t")
 
 			if nodeInfo[0].isdigit():
-				assert len(nodeInfo) is 4 # no need to process trash! FIXME
+				assert len(nodeInfo) == 4 # no need to process trash! FIXME
 				attributeValue_pairs = self.FSPairs(nodeInfo[3][4:-1])
 				attributes = self.updateFSValues(attributeValue_pairs)
 				h = attributes.get #NOTE h -> head node attributes
 
 			elif nodeInfo[0].replace(".",'',1).isdigit():
-				assert (len(nodeInfo) is 4) and (nodeInfo[1] and nodeInfo[2] != '') # FIXME
+				assert (len(nodeInfo) == 4) and (nodeInfo[1] and nodeInfo[2] != '') # FIXME
 				self.id_ += 1
 				pos_ = nodeInfo[2].encode("utf-8").decode("ascii",'ignore').encode("ascii")
 				wordForm_ = nodeInfo[1]
@@ -83,7 +83,7 @@ class SSFReader (SanityChecker):
 		for feat in FS.split():
 			if "=" not in feat:continue
 			feat = re.sub("af='+","af='",feat.replace("dmrel=",'drel='))
-			assert len(feat.split("=")) is 2
+			assert len(feat.split("=")) == 2
 			attribute,value = feat.split("=")
 			feats[attribute] = value
 
@@ -91,7 +91,7 @@ class SSFReader (SanityChecker):
 
 	def morphFeatures (self, AF):
 		"LEMMA,CAT,GEN,NUM,PER,CASE,VIB,TAM"
-		assert len(AF[:-1].split(",")) is 8 # no need to process trash! FIXME
+		assert len(AF[:-1].split(",")) == 8 # no need to process trash! FIXME
 		lemma_,cat_,gen_,num_,per_,case_,vib_,tam_ = AF.split(",")
 
 		if len(lemma_) > 1: lemma_ = lemma_.strip("'")
@@ -109,7 +109,7 @@ class SSFReader (SanityChecker):
 				attributes['per_'],attributes['case_'],attributes['vib_'],attributes['tam_'] = \
 					self.morphFeatures (value)
 			elif key == "drel":
-				assert len(value.split(":")) is 2 # no need to process trash! FIXME
+				assert len(value.split(":")) == 2 # no need to process trash! FIXME
 				attributes['drel_'], attributes['parent_'] = re.sub("'|\"",'',value).split(":")
 				assert attributes['drel_'] and attributes['parent_'] != "" # no need to process trash! FIXME
 			else:
