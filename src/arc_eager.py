@@ -24,7 +24,7 @@ class arcEager(object):
 			next_move(label)
 		return self
 
-	def nextTransition(self):
+	def predict(self):
 		"""
 		Predicts the next transition for the parser based on a hand crafted grammar.
 		"""	
@@ -73,7 +73,7 @@ class arcEager(object):
 
 	def REDUCE(self):
 		"""
-		This thing is never called!
+		pops the top of the stack if it has got its head
 		"""
 		self.stack.pop()
 		return self
