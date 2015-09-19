@@ -73,7 +73,11 @@ class arcEager(object):
 
 	def REDUCE(self):
 		"""
+<<<<<<< HEAD
 		pops the top of the stack if it has got its head
+=======
+		Pops the top of the stack, if it has been attached to a word.
+>>>>>>> 318771e19d7f136cd5de3d5a1dba643564d10f6d
 		"""
 		self.stack.pop()
 		return self
