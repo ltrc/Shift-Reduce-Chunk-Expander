@@ -109,8 +109,8 @@ class SSFReader (SanityChecker):
 				attributes['per_'],attributes['case_'],attributes['vib_'],attributes['tam_'] = \
 					self.morphFeatures (value)
 			elif key == "drel":
-				assert len(value.split(":")) == 2 # no need to process trash! FIXME
-				attributes['drel_'], attributes['parent_'] = re.sub("'|\"",'',value).split(":")
+				assert len(value.split(":",1)) == 2 # no need to process trash! FIXME
+				attributes['drel_'], attributes['parent_'] = re.sub("'|\"",'',value).split(":",1)
 				assert attributes['drel_'] and attributes['parent_'] != "" # no need to process trash! FIXME
 			else:
 				variable = str(key) + "_"
