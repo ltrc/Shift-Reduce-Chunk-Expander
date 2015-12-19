@@ -1,0 +1,50 @@
+<Sentence id="3">
+1	((	NP	<fs af='rAwa,,,,,,,' drel=k7t:VGF name=NP head=rAwa>
+1.1	bIwI	JJ	<fs af='bIwI,,,,,,,' name=bIwI>
+1.2	rAwa	NN	<fs af='rAwa,,,,,,,' name=rAwa>
+	))		
+2	((	NP	<fs af='KAna,,,,,,,' drel=k1:VGF name=NP2 head=KAna>
+2.1	salamAna	NNP	<fs af='salamAna,,,,,,,' name=salamAna>
+2.2	KAna	NNP	<fs af='KAna,,,,,,,' name=KAna>
+2.3	ne	PSP	<fs af='ne,,,,,,,' name=ne>
+	))		
+3	((	NP	<fs af='minata,,,,,,,' drel=k7t:VGF name=NP3 head=minata>
+3.1	51	QC	<fs af='51,,,,,,,' name=51>
+3.2	minata	NN	<fs af='minata,,,,,,,' name=minata>
+3.3	meM	PSP	<fs af='meM,,,,,,,' name=meM>
+	))		
+4	((	NP	<fs af='bAxa,,,,,,,' head=bAxa name=NP4 drel=nmod:NP5>
+4.1	eka	QC	<fs af='eka,,,,,,,' name=eka>
+4.2	ke	PSP	<fs af='ke,,,,,,,' name=ke>
+4.3	bAxa	NST	<fs af='bAxa,,,,,,,' name=bAxa>
+	))		
+5	((	NP	<fs af='eka,,,,,,,' head=eka2 name=NP5 drel=adv:VGF>
+5.1	eka	QC	<fs af='eka,,,,,,,' name=eka2>
+	))		
+6	((	NP	<fs af='14,,,,,,,' drel=k2:VGF name=NP6 head=14>
+6.1	14	QC	<fs af='14,,,,,,,' name=14>
+	))		
+7	((	NP	<fs af='tvita,,,,,,,' drel=pof:VGF name=NP7 head=tvita>
+7.1	tvita	NN	<fs af='tvita,,,,,,,' name=tvita>
+	))		
+8	((	VGF	<fs af='kiye,,,,,,,' name=VGF voicetype=active drel=ccof:CCP stype=declarative head=kiye>
+8.1	kiye	VM	<fs af='kiye,,,,,,,' name=kiye>
+8.2	,	SYM	<fs af=',,,,,,,,' name=,>
+	))		
+9	((	CCP	<fs af='Ora,,,,,,,' name=CCP head=Ora>
+9.1	Ora	CC	<fs af='Ora,,,,,,,' name=Ora>
+	))		
+10	((	NP	<fs af='yAkUba,,,,,,,' head=yAkUba name=NP8 drel=k2:VGF2>
+10.1	yAkUba	NNP	<fs af='yAkUba,,,,,,,' name=yAkUba>
+10.2	ko	PSP	<fs af='ko,,,,,,,' name=ko>
+	))		
+11	((	NP	<fs af='begunAha,,,,,,,' drel=k2s:VGF2 name=NP9 head=begunAha>
+11.1	begunAha	NN	<fs af='begunAha,,,,,,,' name=begunAha>
+	))		
+12	((	VGF	<fs af='bawAyA,,,,,,,' drel=ccof:CCP voicetype=active name=VGF2 head=bawAyA stype=declarative>
+12.1	bawAyA	VM	<fs af='bawAyA,,,,,,,' name=bawAyA>
+	))		
+13	((	BLK	<fs af='.,,,,,,,' head=. drel=rsym:CCP name=BLK>
+13.1	.	SYM	<fs af='.,,,,,,,' name=.>
+	))		
+</Sentence>

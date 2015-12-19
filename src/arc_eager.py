@@ -20,7 +20,7 @@ class arcEager(object):
 		Parses the sequence incrementaly till all the input is consumed and only root node is left.
 		"""
 		while not self.isFinalState():
-			next_move, label = self.nextTransition()
+			next_move, label = self.predict()
 			next_move(label)
 		return self
 
@@ -30,27 +30,43 @@ class arcEager(object):
 		"""	
 		if len(self.stack) == 0: 
 			return self.SHIFT, None
-		
+	
+		elif len(self.queue) == 0:
+			return self.REDUCE, None	
 		else:
 			s0 = self.sequence[self.stack[-1]]
 			b0 = self.sequence[self.queue[0]]
-			#if s0.pos in self.template and b0.pos in self.template[s0.pos][0]: return self.LEFTARC, self.template[s0.pos][-1]
-			#elif b0.pos in self.template and s0.pos in self.template[b0.pos][0]: return self.RIGHTARC , self.template[b0.pos][-1]
-			if s0.pos in self.template["LEFTARC"] and b0.pos in self.template["LEFTARC"][s0.pos][0][0]: 
-				return self.SHIFT, None
-				#return self.LEFTARC, self.template["LEFTARC"][s0.pos][-1]
-			elif s0.pos in self.template["LEFTARC"] and b0.pos in self.template["LEFTARC"][s0.pos][0][-1]: 
-				return self.LEFTARC, self.template["LEFTARC"][s0.pos][-1]
-			elif b0.pos in self.template["RIGHTARC"] and s0.pos in self.template["RIGHTARC"][b0.pos][0]: 
-				return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][-1]
+			if s0.pos in self.template["LEFTARC"] and b0.pos in self.template["LEFTARC"][s0.pos].get("exception", {}):
+			        if len(self.queue) is 1: return self.LEFTARC, self.template["LEFTARC"][s0.pos]["exception"][b0.pos]
+			        else: return self.SHIFT, None
+			elif s0.pos in self.template["LEFTARC"] and (b0.pos in self.template["LEFTARC"][s0.pos].get("norm",{}) or \
+			                                                        b0.pos in self.template["LEFTARC"][s0.pos]):
+			        label = self.template["LEFTARC"][s0.pos].get("norm",{}).get(b0.pos) or self.template["LEFTARC"][s0.pos][b0.pos]
+			        return self.LEFTARC, label
+			elif b0.pos in self.template["RIGHTARC"] and s0.pos in self.template["RIGHTARC"][b0.pos]:
+			        return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][s0.pos]
+			elif self.dependencyLink(b0): 
+				return self.REDUCE, None
 			else: return self.SHIFT, None
 
+	def dependencyLink(self, b0):
+		"""
+		Resolves ambiguity between shift and reduce actions.
+		if a dependency exits between any node (<s0) and (b0) then reduce else shift.
+		"""
+		for s in self.stack[:-1]:
+			sN = self.sequence[s]
+			if sN.pos in self.template["LEFTARC"] and b0.pos in self.template["LEFTARC"][sN.pos].get("exception", {}):return True
+			if sN.pos in self.template["LEFTARC"] and (b0.pos in self.template["LEFTARC"][sN.pos].get("norm",{}) or \
+                                                                                b0.pos in self.template["LEFTARC"][sN.pos]): return True
+			if b0.pos in self.template["RIGHTARC"] and sN.pos in self.template["RIGHTARC"][b0.pos]: return True
+		return False
+			
 	def SHIFT(self, label=None):
 		"""
 		Moves the input from buffer to stack.
 		"""
 		self.stack.append(self.queue.pop(0))
-		return self
 
 	def RIGHTARC(self, label=None):
 		"""
@@ -58,9 +74,8 @@ class arcEager(object):
 		"""
 		s0 = self.stack[-1]
 		b0 = self.queue.pop(0)
-		#self.stack.append(b0)
+		self.stack.append(b0)
 		self.labeledEdges.append((self.sequence[b0], (self.sequence[s0].name, label)))
-		return self
 
 	def LEFTARC(self, label=None):
 		"""
@@ -69,15 +84,9 @@ class arcEager(object):
 		s0 = self.stack.pop()
 		b0 = self.queue[0]
 		self.labeledEdges.append((self.sequence[s0], (self.sequence[b0].name,label)))
-		return self
 
-	def REDUCE(self):
+	def REDUCE(self, label=None):
 		"""
-<<<<<<< HEAD
-		pops the top of the stack if it has got its head
-=======
 		Pops the top of the stack, if it has been attached to a word.
->>>>>>> 318771e19d7f136cd5de3d5a1dba643564d10f6d
 		"""
 		self.stack.pop()
-		return self

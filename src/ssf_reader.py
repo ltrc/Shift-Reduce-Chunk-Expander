@@ -43,13 +43,13 @@ class SSFReader (SanityChecker):
 		for line in self.sentence.split("\n"):
 			nodeInfo = line.decode("utf-8").split("\t")
 
-			if nodeInfo[0].isdigit():
+			if nodeInfo[0].isdigit(): # chunk
 				assert len(nodeInfo) == 4 # no need to process trash! FIXME
 				attributeValue_pairs = self.FSPairs(nodeInfo[3][4:-1])
 				attributes = self.updateFSValues(attributeValue_pairs)
 				h = attributes.get #NOTE h -> head node attributes
 
-			elif nodeInfo[0].replace(".",'',1).isdigit():
+			elif nodeInfo[0].replace(".",'',1).isdigit(): # word 
 				assert (len(nodeInfo) == 4) and (nodeInfo[1] and nodeInfo[2] != '') # FIXME
 				self.id_ += 1
 				pos_ = nodeInfo[2].encode("utf-8").decode("ascii",'ignore').encode("ascii")
@@ -109,8 +109,8 @@ class SSFReader (SanityChecker):
 				attributes['per_'],attributes['case_'],attributes['vib_'],attributes['tam_'] = \
 					self.morphFeatures (value)
 			elif key == "drel":
-				assert len(value.split(":")) == 2 # no need to process trash! FIXME
-				attributes['drel_'], attributes['parent_'] = re.sub("'|\"",'',value).split(":")
+				assert len(value.split(":",1)) == 2 # no need to process trash! FIXME
+				attributes['drel_'], attributes['parent_'] = re.sub("'|\"",'',value).split(":",1)
 				assert attributes['drel_'] and attributes['parent_'] != "" # no need to process trash! FIXME
 			else:
 				variable = str(key) + "_"
