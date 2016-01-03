@@ -20,8 +20,8 @@ class SanityChecker (object) :
 		else:
 			if self.modifierModified.values().count(None) is 0:
 				return "#Root-less tree"
-			elif self.modifierModified.values().count(None) > 1 or len(\
-					[None for i in self.nodeList if i.drel is None]) > 1:
+			elif self.modifierModified.values().count(None) > 1:# or len(\
+					#[None for i in self.nodeList if i.drel is None]) > 1:
 				return "#Forest, mulitple roots"
 			elif len(set(self.modifierModified.values()) - set(self.modifierModified.keys())) > 1:
 				difference = set(self.modifierModified.values()) - set(self.modifierModified.keys())

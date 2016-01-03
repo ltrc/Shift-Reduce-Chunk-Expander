@@ -6,7 +6,6 @@ class arcEager(object):
 		self.stack = list()
 		self.template = grammar
 		self.sequence = sequence
-		self.labeledEdges = list()
 		self.queue = range(len(sequence))# + [len(sequence)] #NOTE with dummy ROOT
 
 	def isFinalState(self):
@@ -75,7 +74,8 @@ class arcEager(object):
 		s0 = self.stack[-1]
 		b0 = self.queue.pop(0)
 		self.stack.append(b0)
-		self.labeledEdges.append((self.sequence[b0], (self.sequence[s0].name, label)))
+		self.sequence[b0] = self.sequence[b0]._replace(drel=label)
+		self.sequence[b0] = self.sequence[b0]._replace(parent=self.sequence[s0].name)
 
 	def LEFTARC(self, label=None):
 		"""
@@ -83,7 +83,8 @@ class arcEager(object):
 		"""
 		s0 = self.stack.pop()
 		b0 = self.queue[0]
-		self.labeledEdges.append((self.sequence[s0], (self.sequence[b0].name,label)))
+		self.sequence[s0] = self.sequence[s0]._replace(drel=label)
+		self.sequence[s0] = self.sequence[s0]._replace(parent=self.sequence[b0].name)
 
 	def REDUCE(self, label=None):
 		"""
