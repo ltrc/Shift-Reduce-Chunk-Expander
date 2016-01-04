@@ -44,11 +44,34 @@ class arcEager(object):
 			        	label = self.template["LEFTARC"][s0.pos].get("norm",{}).get(b0.pos) or \
 										self.template["LEFTARC"][s0.pos][b0.pos]
 				        return self.LEFTARC, label
+				else:
+					if b0.pos in self.template["RIGHTARC"] and s0.pos in self.template["RIGHTARC"][b0.pos]:
+					        return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][s0.pos]
+					elif self.dependencyLink(b0): 
+						return self.REDUCE, None
+					else: return self.SHIFT, None
 			elif b0.pos in self.template["RIGHTARC"] and s0.pos in self.template["RIGHTARC"][b0.pos]:
 			        return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][s0.pos]
 			elif self.dependencyLink(b0): 
 				return self.REDUCE, None
 			else: return self.SHIFT, None
+
+	def getValidTransitions(self, stack, queue):
+		"""
+		Valid transitions applicable to a configuration.
+		"""
+		moves = ['LEFTARC','RIGHTARC','REDUCE','SHIFT']
+		if not queue:
+			moves.pop(0), moves.pop(1), moves.pop(3)
+		
+		if not stack:
+			moves.pop(0), moves.pop(1), moves.pop(2)
+		else:
+			s0 = self.sequence[stack[-1]]
+			if queue:
+				if s0.parent == None: moves.pop(2)
+			if s0.parent != None: moves.pop(0)
+		return moves
 
 	def dependencyLink(self, b0):
 		"""
