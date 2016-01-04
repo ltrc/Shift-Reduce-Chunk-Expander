@@ -38,6 +38,7 @@ def backToSSF(tree_, sent_id):
 			treelet = treelet._replace(chunkId=None)
 		else:
 			for headNode in tree_:
+				if headNode.chunkType == None:continue
 				if treelet.parent == headNode.chunkId:
 					treelet = treelet._replace(parent=headNode.name)
 		ssftreelet = getAttributeValuePairs(treelet)
