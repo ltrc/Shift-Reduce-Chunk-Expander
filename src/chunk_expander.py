@@ -59,7 +59,7 @@ def updateHead(head, headinfo, sentence, mapping):
 			elif (headinfo.head != head.name) and (attribute == "af"):continue
 			else:
 				head = head._replace(**{attribute:infoDict[attribute]})
-	if headinfo.head != head.name:
+	if (headinfo.head != head.name) and (head.head != 'NULL'):
 		logFile.write("Error: Computed head is probably wrong.\n")
 		logFile.write("%s\n" % sentence)
 	return head
@@ -113,13 +113,13 @@ def expander(sentences):
 				unknownRule = [" ".join((cn.id,cn.head,cn.pos)) for cn in chunk[1:]]
 				logFile.write("Error: Unknown derivation %s\n" % ("|".join(unknownRule).encode("utf-8")))
 				logFile.write("%s\n" % sentence)
+				tree_ = list()
 				break
 			expandedChunk = sr_parser.sequence
 			expandedChunk[sr_parser.stack[0]] = updateHead(expandedChunk[sr_parser.stack[0]], chunk[0], 
 									sentence, reader_object.nodeIndex)
-			#for node_ in expandedChunk: tree_.append(getAttributeValuePairs(node_))
 			for node_ in expandedChunk: tree_.append(node_)
-		backToSSF(tree_, sent_id)
+		if tree_:backToSSF(tree_, sent_id)
 	logFile.close()
 	outputFile.close()
 

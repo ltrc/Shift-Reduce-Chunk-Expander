@@ -36,12 +36,14 @@ class arcEager(object):
 			s0 = self.sequence[self.stack[-1]]
 			b0 = self.sequence[self.queue[0]]
 			if s0.pos in self.template["LEFTARC"] and b0.pos in self.template["LEFTARC"][s0.pos].get("exception", {}):
-			        if len(self.queue) is 1: return self.LEFTARC, self.template["LEFTARC"][s0.pos]["exception"][b0.pos]
+			        if len(self.queue) == 1: return self.LEFTARC, self.template["LEFTARC"][s0.pos]["exception"][b0.pos]
 			        else: return self.SHIFT, None
 			elif s0.pos in self.template["LEFTARC"] and (b0.pos in self.template["LEFTARC"][s0.pos].get("norm",{}) or \
 			                                                        b0.pos in self.template["LEFTARC"][s0.pos]):
-			        label = self.template["LEFTARC"][s0.pos].get("norm",{}).get(b0.pos) or self.template["LEFTARC"][s0.pos][b0.pos]
-			        return self.LEFTARC, label
+				if not s0.parent:
+			        	label = self.template["LEFTARC"][s0.pos].get("norm",{}).get(b0.pos) or \
+										self.template["LEFTARC"][s0.pos][b0.pos]
+				        return self.LEFTARC, label
 			elif b0.pos in self.template["RIGHTARC"] and s0.pos in self.template["RIGHTARC"][b0.pos]:
 			        return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][s0.pos]
 			elif self.dependencyLink(b0): 

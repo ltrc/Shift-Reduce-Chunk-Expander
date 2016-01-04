@@ -3,6 +3,7 @@
 if [[ $# -ne 3 ]]
 then
 	echo "Required arguments not provided! Exiting now .. .. .."
+	echo "USAGE: bash run_expander.sh <input[file|folder]> <output file> <grammar>"
 	exit
 fi
 
