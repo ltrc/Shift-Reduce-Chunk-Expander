@@ -30,8 +30,6 @@
 	},
 "RIGHTARC" : 
 	{"WQ" : {"CC":"mod"},
-	"JJ"  : {"JJ":"mod"},
-	"PRP" : {"PRP":"mod"},
 	"QC"  : {"NN":"nmod__adj"},
 	"UNK" : dict(zip(["NN", "NNP"], ["mod"] * 2)),
 	"VAUX": {"VM":"lwg__vaux", "VAUX":"lwg__vaux_cont"},
