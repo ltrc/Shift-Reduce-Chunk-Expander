@@ -46,7 +46,7 @@ class SSFReader (SanityChecker):
 				pos_ = nodeInfo[2].encode("utf-8").decode("ascii",'ignore').encode("ascii")
 				wordForm_ = nodeInfo[1]
 				attributeValue_pairs = self.FSPairs(nodeInfo[3][4:-1])
-				attributes = self.updateFSValues(attributeValue_pairs)
+				attributes = self.updateFSValues(attributeValue_pairs, wordForm_, pos_)
 				c = attributes.get #NOTE c -> child node attributes
 				self.nodeIndex[self.id_] = c('name_')
 				children_.append(self.node._make([str(self.id_),wordForm_,pos_,c('poslcat_'),self.features(c('lemma_')\
@@ -68,14 +68,18 @@ class SSFReader (SanityChecker):
 			feats[attribute] = re.sub("'|\"",'',value)
 		return feats
 
-	def morphFeatures (self, AF):
+	def morphFeatures (self, AF, word, tag):
 		"LEMMA,CAT,GEN,NUM,PER,CASE,VIB,TAM"
 		#assert len(AF[:-1].split(",")) == 8 # no need to process trash! FIXME
-		lemma_,cat_,gen_,num_,per_,case_,vib_,tam_ = AF.split(",")
+		if tag == 'SYM':
+			lemma_,cat_ = word, 'punc'
+			gen_,num_,per_,case_,vib_,tam_ = [''] * 6
+		else:	
+			lemma_,cat_,gen_,num_,per_,case_,vib_,tam_ = AF.split(",")
 		if len(lemma_) > 1: lemma_ = lemma_.strip("'")
 		return lemma_.strip("'"),cat_,gen_,num_,per_,case_,vib_,tam_.strip("'")
 	
-	def updateFSValues (self, attributeValue_pairs):
+	def updateFSValues (self, attributeValue_pairs, word=None, tag=None):
 		attributes = dict(zip(['head_','poslcat_','af_','vpos_','name_','drel_','parent_','mtype_','troot_','chunkId_',\
 					'coref_','stype_','voicetype_','posn_'], [None] * 14))
 		attributes.update(dict(zip(['lemma_','cat_','gen_','num_','per_','case_','vib_','tam_'], [''] * 8)))
@@ -83,7 +87,7 @@ class SSFReader (SanityChecker):
 			if key == "af":
 				attributes['lemma_'],attributes['cat_'],attributes['gen_'],attributes['num_'],\
 				attributes['per_'],attributes['case_'],attributes['vib_'],attributes['tam_'] = \
-					self.morphFeatures (value)
+					self.morphFeatures (value, word, tag)
 			elif key == "drel":
 				assert len(value.split(":",1)) == 2 # no need to process trash! FIXME
 				attributes['drel_'], attributes['parent_'] = re.sub("'|\"",'',value).split(":",1)

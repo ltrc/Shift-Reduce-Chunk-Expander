@@ -76,9 +76,10 @@
 	))
 19	((	VGF	<fs voicetype='active' name='VGF2' stype='declarative' drel='ccof:CCP'>
 19.1	hE	VM	<fs af='hE,v,any,sg,3,,hE,hE' name='hE' posn='400'>
+19.2	,	SYM	<fs af=',,,,,,,,' name=',' posn='410'>
 	))
 20	((	BLK	<fs name='BLK' drel='rsym:VGF'>
-20.1	.	SYM	<fs af='.,punc,,,,,,' name='.' posn='410'>
+20.1	.	SYM	<fs af='.,punc,,,,,,' name='.' posn='420'>
 	))
 </Sentence>
 
