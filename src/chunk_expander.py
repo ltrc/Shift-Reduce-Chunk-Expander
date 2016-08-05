@@ -65,22 +65,27 @@ def updateHead(head, headinfo, sentence, mapping):
 		logFile.write("%s\n" % sentence)
 	return head
 
-def ilmtAPI(first, last, text):
+def ilmtAPI(source, target, first, last, text):
         pool = urllib3.PoolManager()
-        url = 'http://api.ilmt.iiit.ac.in/hin/pan/%s/%s' % (first, last)
+        url = 'http://api.ilmt.iiit.ac.in/%s/%s/%s/%s' % (source, target, first, last)
         method = 'POST'
         headers = {'Content-Type':'application/x-www-form-urlencoded', 'charset':'UTF-8'}
         data = pool.urlopen(method, url, headers = headers, body = text).data
         return json.loads(data)
 
-def headVibComputation(sentence):
+def headVibComputation(sentence, source, target):
 	#NOTE handled NULL nodes without af
 	nullHandled = re.sub(r"<fs name='NULL(.*?)'>",r"<fs af='null,unk,,,,,,' name='NULL\1'>", sentence.strip())
-	#NOTE compute head and vibakhti
-	headComputed = ilmtAPI('9', '9', "input=%s" % (nullHandled))
-	payload = "keep=true&input=" + urllib.quote(headComputed['computehead-9'])
-	vibComputed = ilmtAPI('10', '10', payload)["computevibhakti-10"] #NOTE PSPs and Auxillaries are retained.
-	return vibComputed
+	#NOTE compute head
+	if source == "hin":
+		headComputed = ilmtAPI(source, target, '11', '11', "input=%s" % (urllib.quote(nullHandled)))
+	else:
+		headComputed = ilmtAPI(source, target, '10', '10', "input=%s" % (urllib.quote(nullHandled)))
+	#payload = "keep=true&input=" + urllib.quote(headComputed['computehead-9'])
+	if source == "hin":
+		return headComputed['computehead-11']
+	else:
+		return headComputed['computehead-10']
 
 def expander(sentences):
 	for idx,sentence in enumerate(sentences):
@@ -88,7 +93,7 @@ def expander(sentences):
 		sentence_content = sentence.group(2)
 		sentence = "%s%s</Sentence>" % (sent_id, sentence_content)
 		try:
-			sentence = headVibComputation(sentence).encode("utf-8")
+			sentence = headVibComputation(sentence,source, target).encode("utf-8")
 		except:
 			logFile.write("%s -> Error: Something wrong in head or vibhakhti computation\n" % (sent_id))
 		logger.info("Sentence number {0} read for processing.".format(idx+1))
@@ -130,6 +135,7 @@ if __name__ == "__main__":
 	parser.add_argument('--input-file'     , dest='input'     , required=True, help='Input file in ssf format')
 	parser.add_argument('--output-file'    , dest='output'    , required=True, help='Output file')
 	parser.add_argument('--grammar-file'   , dest='grammar'   , required=True, help='Grammar file')
+	parser.add_argument('--language' , dest='language'  , required=True, choices=['hin', 'urd'], help='Input language')
 	parser.add_argument('--log-file'       , dest='log'       , required=True, help='will contain expansion details')
 
 	args = parser.parse_args()
@@ -139,7 +145,12 @@ if __name__ == "__main__":
 	
 	if os.path.isfile(os.path.abspath(args.log)): logFile = open(args.log,'a')
 	else: logFile = open(args.log,'w')
-	
+
+	if args.language == "hin":	
+		source, target = args.language, "urd"
+	else:
+		source, target = args.language, "hin"
+
 	filePath = os.path.abspath(args.input)
 	logFile.write(filePath+"\n")
 
