@@ -31,22 +31,29 @@ class arcEager(object):
 			return self.SHIFT, None
 	
 		elif len(self.queue) == 0:
-			return self.REDUCE, None	
+			if self.sequence[self.stack[-1]].parent:
+				return self.REDUCE, None
+			else:
+				raise NotImplementedError("Unkonwn Derivation")
 		else:
 			s0 = self.sequence[self.stack[-1]]
 			b0 = self.sequence[self.queue[0]]
+			if s0.parent and self.sequence[s0.pid].pos == "NNZ":
+				return self.REDUCE, None
 			if s0.pos in self.template["LEFTARC"] and b0.pos in self.template["LEFTARC"][s0.pos].get("exception", {}):
 			        if len(self.queue) == 1: return self.LEFTARC, self.template["LEFTARC"][s0.pos]["exception"][b0.pos]
 			        else: return self.SHIFT, None
 			elif s0.pos in self.template["LEFTARC"] and (b0.pos in self.template["LEFTARC"][s0.pos].get("norm",{}) or \
 			                                                        b0.pos in self.template["LEFTARC"][s0.pos]):
-				if not s0.parent:
+				if s0.parent is None:
+					if int(b0.id) - int(s0.id) == 1 and s0.pos == "NNZ":
+						return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][s0.pos]
 			        	label = self.template["LEFTARC"][s0.pos].get("norm",{}).get(b0.pos) or \
 										self.template["LEFTARC"][s0.pos][b0.pos]
 				        return self.LEFTARC, label
 				else:
 					if b0.pos in self.template["RIGHTARC"] and s0.pos in self.template["RIGHTARC"][b0.pos]:
-					        return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][s0.pos]
+						return self.RIGHTARC , self.template["RIGHTARC"][b0.pos][s0.pos]
 					elif self.dependencyLink(b0): 
 						return self.REDUCE, None
 					else: return self.SHIFT, None
@@ -83,7 +90,7 @@ class arcEager(object):
 		b0 = self.queue.pop(0)
 		self.stack.append(b0)
 		self.sequence[b0] = self.sequence[b0]._replace(drel=label)
-		self.sequence[b0] = self.sequence[b0]._replace(parent=self.sequence[s0].name)
+		self.sequence[b0] = self.sequence[b0]._replace(parent=self.sequence[s0].name, pid=s0)
 
 	def LEFTARC(self, label=None):
 		"""
@@ -92,7 +99,7 @@ class arcEager(object):
 		s0 = self.stack.pop()
 		b0 = self.queue[0]
 		self.sequence[s0] = self.sequence[s0]._replace(drel=label)
-		self.sequence[s0] = self.sequence[s0]._replace(parent=self.sequence[b0].name)
+		self.sequence[s0] = self.sequence[s0]._replace(parent=self.sequence[b0].name, pid=b0)
 
 	def REDUCE(self, label=None):
 		"""

@@ -16,23 +16,25 @@ from ssf_reader import SSFReader
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def getAttributeValuePairs(node):
 	pairs = list()
 	drel_ = list()
 	nodeDict = node._asdict()
 	for attribute in nodeDict:
 		value = nodeDict[attribute]
-		if not value: continue
+		if (attribute != 'name') and (not value): continue
 		if attribute == "af": pairs.append("=".join(("af","'%s'" % ",".join([af_attr for af_attr in value]))))
 		elif attribute in ["id", "pos", "head"]: pairs.append(value)
 		elif attribute in ["drel", "parent"]: drel_.append(value) if attribute == "parent" else drel_.append(value)
-		else: pairs.append("=".join((attribute,"'%s'" % value)))
+		else:pairs.append("=".join((attribute,"'%s'" % value)))
 	if drel_: pairs.insert(4, "drel='%s'" % ":".join(drel_))
 	return pairs
 
 def backToSSF(tree_, sent_id):
 	outputFile.write("%s\n" % sent_id)
 	for treelet in tree_:
+		treelet	= treelet._replace(pid=None)
 		if treelet.chunkType == None:
 			treelet	= treelet._replace(chunkType="child:%s"%treelet.chunkId)
 			treelet = treelet._replace(chunkId=None)
@@ -47,7 +49,7 @@ def backToSSF(tree_, sent_id):
 	outputFile.write("</Sentence>\n\n")
 	logFile.write("%s Successfully expanded!!\n" %sent_id)
 
-def updateHead(head, headinfo, sentence, mapping):
+def updateHead(head, headinfo, mapping, sentence=None):
 	infoDict = headinfo._asdict()
 	for attribute in infoDict:
 		if infoDict[attribute] or attribute == "chunkType":
@@ -87,6 +89,18 @@ def headVibComputation(sentence, source, target):
 	else:
 		return headComputed['computehead-10']
 
+def backoff(chunk, head, index_mapping):
+	tree = []
+	if head.chunkId.startswith('FRAGP'): head = head._replace(head=chunk[0].head) 
+	headName = head.head
+	for nid, node in enumerate(chunk):
+		if node.head == head.head:
+			node = updateHead(node, head, index_mapping)
+		else:
+			node = node._replace(parent=headName, drel='mod')
+		tree.append(node)
+	return tree
+
 def expander(sentences):
 	for idx,sentence in enumerate(sentences):
 		sent_id = sentence.group(1).replace("'", '"')
@@ -107,24 +121,20 @@ def expander(sentences):
 		if sanity_check:logFile.write("%s -> Error: %s\n" % (sent_id, sanity_check));continue
 		tree_ = list()
 		for chunk in reader_object.nodeList:
-			'''if node.chunkId == "FRAGP":
-				tree_.append(getAttributeValuePairs(node, chunkToWordMapping))
-				for child in node.children:
-					tree_.append(getAttributeValuePairs(child,chunkToWordMapping,(node.name, 'mod')))
-				continue'''
 			sr_parser = arcEager(grammar, chunk[1:])
 			try:
 				sr_parser.parse()
-			except:
+			except NotImplementedError:
 				unknownRule = [" ".join((cn.id,cn.head,cn.pos)) for cn in chunk[1:]]
 				logFile.write("Error: Unknown derivation %s\n" % ("|".join(unknownRule).encode("utf-8")))
 				logFile.write("%s\n" % sentence)
-				tree_ = list()
-				break
-			expandedChunk = sr_parser.sequence
-			expandedChunk[sr_parser.stack[0]] = updateHead(expandedChunk[sr_parser.stack[0]], chunk[0], 
-									sentence, reader_object.nodeIndex)
-			for node_ in expandedChunk: tree_.append(node_)
+				expandedNoise = backoff(chunk[1:], chunk[0], reader_object.nodeIndex)
+				tree_.extend(expandedNoise)
+			else:
+				expandedChunk = sr_parser.sequence
+				expandedChunk[sr_parser.stack[0]] = updateHead(expandedChunk[sr_parser.stack[0]], chunk[0], 
+									reader_object.nodeIndex, sentence)
+				for node_ in expandedChunk: tree_.append(node_)
 		if tree_:backToSSF(tree_, sent_id)
 	logFile.close()
 	outputFile.close()
@@ -135,7 +145,7 @@ if __name__ == "__main__":
 	parser.add_argument('--input-file'     , dest='input'     , required=True, help='Input file in ssf format')
 	parser.add_argument('--output-file'    , dest='output'    , required=True, help='Output file')
 	parser.add_argument('--grammar-file'   , dest='grammar'   , required=True, help='Grammar file')
-	parser.add_argument('--language' , dest='language'  , required=True, choices=['hin', 'urd'], help='Input language')
+	parser.add_argument('--language'       , dest='language'  , required=True, choices=['hin', 'urd'], help='Input language')
 	parser.add_argument('--log-file'       , dest='log'       , required=True, help='will contain expansion details')
 
 	args = parser.parse_args()

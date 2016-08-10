@@ -26,7 +26,8 @@ then
 	do
 		if [[ -f $file ]]
 		then
-			python chunk_expander.py --input $file --output $output --log log --grammar $grammar --lang $language
+			python chunk_expander.py --input $file --output $file.exp --log log --grammar $grammar --lang $language
+			mv $file.exp $file
 		fi
 	done
 else
