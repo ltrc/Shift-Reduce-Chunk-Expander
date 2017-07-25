@@ -24,7 +24,9 @@
         "NEG"  : dict(zip(["NN", "NNP","QC","NST","VM","RB","PRP","WQ","CC"], ["lwg__neg"] * 9)) ,
         "RP"   : dict(zip(["NN","NNP","QC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","INJ","CC","NEG"], ["lwg__rp"] * 15)),
         "DEM"  : {"exception": dict(zip(["NST","VM","PRP","QC"], ["nmod__adj"] * 4)), "norm":dict(zip(["NN","NNP", "NNZ"], ["nmod__adj"] * 3))},
-        "SYM"  : dict(zip(["NN","NNP","QC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","RDP","SYM","INJ","CC"], ["rsym"] * 17)),
+        "DET"  : {"exception": dict(zip(["NST","VM","PRP","QC"], ["nmod__adj"] * 4)), "norm":dict(zip(["NN","NNP", "NNZ"], ["nmod__adj"] * 3))},
+        "SYM"  : dict(zip(["NN","NNP","QC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","RDP","SYM","PUNC","INJ","CC"], ["rsym"] * 17)),
+        "PUNC"  : dict(zip(["NN","NNP","QC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","RDP","SYM","PUNC","INJ","CC"], ["rsym"] * 17)),
         "JJ"   : {"exception": dict(zip(["WQ","PRP","QC"], ["nmod__adj"] * 3)), "norm":dict(zip(["NN", "NNP","NST", "NNZ"], ["nmod__adj"] * 4))},
         "QC"   : {"exception": dict(zip(["JJ", "QF"],["nmod__adj"] * 2)), "norm":dict(zip(["NN","NNP","PRP","WQ","QC", "NNZ"], ["nmod__adj"] * 6))},
         "QF"   : {"exception": dict(zip(["JJ","PRP","QC","NST","QF"], ["nmod__adj"] * 5)), "norm":dict(zip(["NN","NNP"], ["nmod__adj"] * 2))}
@@ -42,6 +44,7 @@
         "ECH" : dict(zip(["NN","NNP","QC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","INJ","CC","UNK"], ["pof__redup"] * 16)),
         "RP"  : dict(zip(["NN","NNP","QC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","INJ","CC","NEG","UNK","VAUX","NNZ"], ["lwg__rp"]*18)),
         "RDP" : dict(zip(["NN","NNP","QC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","INJ","CC","UNK","QCC"], ["pof__redup"]*17)),
-   "SYM" : dict(zip(["NN","NNP","QC","QCC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","RDP","SYM","INJ","CC","NEG"],["rsym"] * 19))
+   "SYM" : dict(zip(["NN","NNP","QC","QCC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","RDP","SYM","PUNC","INJ","CC","NEG"],["rsym"] * 19)),
+   "PUNC" : dict(zip(["NN","NNP","QC","QCC","NST","VM","JJ","RB","QF","PRP","QO","WQ","INTF","RP","RDP","SYM","PUNC","INJ","CC","NEG"],["rsym"] * 19))
         }
 }
